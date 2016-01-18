@@ -122,13 +122,14 @@ class Processors(object):
         Kwargs:
             None
         """
-        return self.wikilink(html)
+        # html = self.wikilink(html)
+        return html
 
     def out(self):
         """Final content output.  Processes the Markdown, post-processes, and
         Meta data.
         """
-        md = markdown.Markdown(['codehilite', 'fenced_code', 'meta', 'tables'])
+        md = markdown.Markdown(['codehilite', 'fenced_code', 'meta', 'tables', 'footnotes', 'toc', 'wikilinks', 'mdx_math'])
         html = md.convert(self.content)
         phtml = self.post(html)
         body = self.content.split('\n\n', 1)[1]
@@ -431,7 +432,7 @@ class User(object):
 
 
 def get_default_authentication_method():
-    return app.config.get('DEFAULT_AUTHENTICATION_METHOD', 'cleartext')
+    return app.config.get('DEFAULT_AUTHENTICATION_METHOD', 'hash')
 
 
 def make_salted_hash(password, salt=None):
@@ -674,6 +675,12 @@ def user_delete(user_id):
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
+
+@app.errorhandler(Exception)
+def exception_handler(error):
+    print repr(error)
+    return "!!!!"  + repr(error)
 
 if __name__ == '__main__':
     manager.run()

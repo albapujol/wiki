@@ -2,11 +2,15 @@
 
 {% block title %}Create a new page{% endblock title %}
 {% block content %}
-<form method="POST" class="form-inline">
-	{{ form.hidden_tag() }}
-	{{ input(form.url, placeholder="URL of the new page") }}
-	<input type="submit" class="btn btn-success" value="Create">
-</form>
+<div class="row">
+	<div class="col-lg-12">
+		<form method="POST" class="form-inline">
+			{{ form.hidden_tag() }}
+			{{ input(form.url, placeholder="URL of the new page") }}
+			<input type="submit" class="btn btn-success" value="Create">
+		</form>
+	</div>
+</div>
 {% endblock content %}
 
 {% block sidebar %}

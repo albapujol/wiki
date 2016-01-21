@@ -459,6 +459,16 @@ def protect(f):
         return f(*args, **kwargs)
     return wrapper
 
+def editor(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if app.config.get('PRIVATE') and not current_user.is_authenticated():
+            return loginmanager.unauthorized()
+        if  not 'admin' in current_user.get('roles'):
+            return loginmanager.unauthorized()
+        return f(*args, **kwargs)
+    return wrapper
+
 
 """
     Forms
@@ -546,7 +556,7 @@ def display(url):
 
 
 @app.route('/create/', methods=['GET', 'POST'])
-@protect
+@editor
 def create():
     form = URLForm()
     if form.validate_on_submit():
@@ -555,7 +565,7 @@ def create():
 
 
 @app.route('/edit/<path:url>/', methods=['GET', 'POST'])
-@protect
+@editor
 def edit(url):
     page = wiki.get(url)
     form = EditorForm(obj=page)
@@ -570,7 +580,7 @@ def edit(url):
 
 
 @app.route('/preview/', methods=['POST'])
-@protect
+@editor
 def preview():
     a = request.form
     data = {}
@@ -580,7 +590,7 @@ def preview():
 
 
 @app.route('/move/<path:url>/', methods=['GET', 'POST'])
-@protect
+@editor
 def move(url):
     page = wiki.get_or_404(url)
     form = URLForm(obj=page)
@@ -592,7 +602,7 @@ def move(url):
 
 
 @app.route('/delete/<path:url>/')
-@protect
+@editor
 def delete(url):
     page = wiki.get_or_404(url)
     wiki.delete(url)

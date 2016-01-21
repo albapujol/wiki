@@ -1,8 +1,6 @@
 # Readme
 
 ## About
-Flask-wiki based on alexex/wiki. 
-
 As I wanted a wiki that just uses plain markdown files as backend, that is easy
 to use and that is written in python, to enable me to easily hack around,
 but found nothing, I just wrote this down. I hope that it might help others ,too.
@@ -25,12 +23,15 @@ but found nothing, I just wrote this down. I hope that it might help others ,too
 
 ## Setup
 Just clone this repository, cd into it, run `pip install -r requirements.txt`
-and create `content/` in the root directory with a `config.py` in it,
+and create `content/` in the root directory, and `config/` with a `config.py` in it,
 that contains at least the following:
 
 	# encoding: <your encoding (probably utf-8)
 	SECRET_KEY='a unique and long key'
 	TITLE='Wiki' # Title Optional
+	
+The `content` and `config` folder can be changed, respectively, by altering the parameters
+`app.config['CONTENT_DIR']` and `app.config['CONFIG_DIR']` in the `app.py` file.
 
 ## Start
 Afterwards just run the app however you want. I personally recommend something
@@ -45,20 +46,31 @@ the app with `python app.py` which will run the development server in debug
 mode. Have fun.
 
 ### Users
-The users are stored (still working on it) in a file called `users.json.
+The users are stored in a file called `users.json`. This file must be located in the folder
+specified in the configuration `app.config['CONFIG_DIR']`.
 
-Example format (untested):
+
+Example format (clear text and hashed password):
 ```json
 {
   "admin": {
     "active": true, 
+    "authentication_method": "cleartext", 
+    "authenticated": false, 
+    "password": "admin", 
+    "roles": []
+  }
+   "admin_hashed": {
+    "active": true, 
     "authentication_method": "hash", 
     "authenticated": false, 
-    "hash": "", 
-    "roles": []
+    "hash": "....", 
+    "roles": ['admin']
   }
 }
 ```
+Note: the hash can be computed using the `make_salted_hash` function on `app.py`.
+Note: in the example, only `admin_hacked` will have edit permissions.
 
 ## Theming
 The templates are based on jinja2. I used

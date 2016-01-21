@@ -41,6 +41,7 @@
 						<li><a href="{{ url_for('create') }}">New Page</a></li>
 						<li class="divider-vertical"></li>
 						<li></li>
+						{% block morenavbar %}{% endblock morenavbar%}
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{% if current_user.is_anonymous() %}
@@ -63,7 +64,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="span7 offset1">
+				<div class="span10 offset1">
 					{% with messages = get_flashed_messages(with_categories=True) %}
 						{% if messages %}
 							{% for category, message in messages %}
@@ -79,10 +80,6 @@
 					{% endif %}
 					{% block content %}
 					{% endblock content %}
-				</div>
-				<div class="span3">
-					{% block sidebar %}
-					{% endblock sidebar %}
 				</div>
 			</div>
 		</div>

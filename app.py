@@ -22,10 +22,11 @@ from flask.ext.script import Manager
 
 app = Flask(__name__)
 app.config['CONTENT_DIR'] = 'content'
+app.config['CONFIG_DIR'] = 'config'
 app.config['TITLE'] = 'wiki'
 try:
     app.config.from_pyfile(
-        os.path.join(app.config.get('CONTENT_DIR'), 'config.py')
+        os.path.join(app.config.get('CONFIG_DIR'), 'config.py')
     )
 except IOError:
     print ("Startup Failure: You need to place a "
@@ -506,7 +507,7 @@ class LoginForm(Form):
 
 wiki = Wiki(app.config.get('CONTENT_DIR'))
 
-users = UserManager(app.config.get('CONTENT_DIR'))
+users = UserManager(app.config.get('CONFIG_DIR'))
 
 
 @loginmanager.user_loader

@@ -602,6 +602,7 @@ def create():
 @app.route('/edit/<path:url>/', methods=['GET', 'POST'])
 @editor
 def edit(url):
+    clear_cache(url)
     page = wiki.get(url)
     form = EditorForm(obj=page)
     if form.validate_on_submit():
@@ -611,7 +612,6 @@ def edit(url):
         page.save()
         flash('"%s" was saved.' % page.title, 'success')
         return redirect(url_for('display', url=url))
-    clear_cache(url)
     return render_template('editor.html', form=form, page=page)
 
 

@@ -72,6 +72,17 @@ Example format (clear text and hashed password):
 Note: the hash can be computed using the `make_salted_hash` function on `app.py`.
 Note: in the example, only `admin_hacked` will have edit permissions.
 
+### Cache
+A cahcue functionality has been added. The cache refreshes every 3600 seconds or when the page is edited
+through the web interface. Still in beta phase.
+
+To enable the cache, add the configuration to the `config.py` file:
+
+    CACHE_TYPE = 'filesystem'
+    CACHE_DIR = 'cache'
+
+The redis cache is  implemented but not tested.
+
 ## Theming
 The templates are based on jinja2. I used
 [bootstrap](http://twitter.github.com/bootstrap/) for the design. NOTE: Updated to bootstrap3.

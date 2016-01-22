@@ -10,3 +10,4 @@ Werkzeug>=0.8.3
 gunicorn>=0.14.6
 wsgiref>=0.1.2
 python-markdown-math>=0.2
+Flask-Cache>=0.13

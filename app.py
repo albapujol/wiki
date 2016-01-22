@@ -14,6 +14,7 @@ from flask.ext.login import (LoginManager, login_required, current_user,
                              login_user, logout_user)
 from flask.ext.script import Manager
 
+from flask.ext.cache import Cache
 
 """
     Application Setup
@@ -24,6 +25,7 @@ app = Flask(__name__)
 app.config['CONTENT_DIR'] = 'content'
 app.config['CONFIG_DIR'] = 'config'
 app.config['TITLE'] = 'wiki'
+
 try:
     app.config.from_pyfile(
         os.path.join(app.config.get('CONFIG_DIR'), 'config.py')
@@ -32,11 +34,41 @@ except IOError:
     print ("Startup Failure: You need to place a "
            "config.py in your content directory.")
 
+if app.config['CACHE_TYPE'] and app.config['CACHE_TYPE']=='filesystem':
+    cache = Cache(app,config={
+        'CACHE_TYPE': 'filesystem',
+        'CACHE_DIR': app.config['CACHE_DIR']
+    })
+elif app.config['CACHE_TYPE'] and app.config['CACHE_TYPE']=='redis':
+    cache = Cache(app,config={
+        'CACHE_TYPE': 'redis',
+        'CACHE_REDIS_HOST': app.config['CACHE_REDIS_HOST'],
+        'CACHE_REDIS_PORT': app.config['CACHE_REDIS_PORT'],
+        'CACHE_REDIS_PASSWORD': app.config['CACHE_REDIS_PASSWORD'],
+        'CACHE_REDIS_DB': app.config['CACHE_REDIS_DB'],
+    })
+else:
+    cache = Cache(app,config={'CACHE_TYPE': 'null'})
+
+
 manager = Manager(app)
 
 loginmanager = LoginManager()
 loginmanager.init_app(app)
 loginmanager.login_view = 'user_login'
+
+"""
+    Cache management
+    ~~~~~~~~~~~~~~
+"""
+
+def clear_cache(url=None):
+    if url is None:
+        cache.clear()
+        cache.delete_memoized(display)
+    else:
+        cache.delete_memoized(display, url)
+
 
 
 
@@ -534,6 +566,7 @@ def load_user(name):
 
 @app.route('/')
 @protect
+@cache.cached(timeout=3600)
 def home():
     page = wiki.get('home')
     if page:
@@ -543,6 +576,7 @@ def home():
 
 @app.route('/index/')
 @protect
+@cache.cached(timeout=3600)
 def index():
     pages = wiki.index()
     return render_template('index.html', pages=pages)
@@ -550,6 +584,7 @@ def index():
 
 @app.route('/<path:url>/')
 @protect
+@cache.memoize(timeout=3600)
 def display(url):
     page = wiki.get_or_404(url)
     return render_template('page.html', page=page)
@@ -576,6 +611,7 @@ def edit(url):
         page.save()
         flash('"%s" was saved.' % page.title, 'success')
         return redirect(url_for('display', url=url))
+    clear_cache(url)
     return render_template('editor.html', form=form, page=page)
 
 
@@ -695,3 +731,4 @@ def exception_handler(error):
 
 if __name__ == '__main__':
     manager.run()
+

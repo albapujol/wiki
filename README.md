@@ -73,7 +73,7 @@ Note: the hash can be computed using the `make_salted_hash` function on `app.py`
 Note: in the example, only `admin_hacked` will have edit permissions.
 
 ### Cache
-A cahcue functionality has been added. The cache refreshes every 3600 seconds or when the page is edited
+A cache functionality has been added. The cache refreshes every 3600 seconds or when the page is edited
 through the web interface. Still in beta phase.
 
 To enable the cache, add the configuration to the `config.py` file:

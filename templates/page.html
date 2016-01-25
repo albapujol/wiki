@@ -21,9 +21,9 @@
   {% if page.tags %}
   <strong>Tags: </strong>
     {% for tag in page.tags.split(',') %}
-          <a href="{{ url_for('tag', name=tag.strip()) }}">{{ tag|trim }}</a>,
+          <a href="{{ url_for('tag', name=tag.strip()) }}">{{ tag|trim }}</a>{% if not loop.last %}, {% endif %}
     {% endfor %}
-  <hr></hr>
+  <hr />
   {% endif %}
 	{{ page }}
 {% endblock content %}

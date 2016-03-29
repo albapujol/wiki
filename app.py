@@ -557,6 +557,9 @@ users = UserManager(app.config.get('CONFIG_DIR'))
 def load_user(name):
     return users.get_user(name)
 
+@loginmanager.unauthorized_handler
+def unauthorized():
+    return user_login()
 
 
 """

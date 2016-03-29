@@ -683,7 +683,7 @@ def user_login():
         login_user(user)
         user.set('authenticated', True)
         flash('Login successful.', 'success')
-        return redirect(request.args.get("next") or url_for('index'))
+        return home()
     return render_template('login.html', form=form)
 
 
@@ -693,7 +693,7 @@ def user_logout():
     current_user.set('authenticated', False)
     logout_user()
     flash('Logout successful.', 'success')
-    return redirect(url_for('index'))
+    return home()
 
 
 @app.route('/user/')
